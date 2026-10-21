@@ -1,29 +1,96 @@
-.active {
-  color: red;
-  font-weight: bold;
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f5f5f5;
+  color: #333;
+  margin: 0;
+  padding: 20px;
 }
+
+#root > div > div {
+  max-width: 800px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 30px;
+  border: 1px solid #ccc;
+}
+
 .navbar {
   display: flex;
   gap: 20px;
-  padding-bottom: 10px;
+  padding-bottom: 15px;
+  margin-bottom: 25px;
   border-bottom: 1px solid #ccc;
-  margin-bottom: 20px;
 }
+
 .navbar a {
   text-decoration: none;
+  color: #555;
+  font-size: 16px;
 }
+
+.active {
+  color: red !important;
+  font-weight: bold !important;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
+  margin-top: 20px;
 }
+
 th, td {
-  border: 1px solid #ccc;
-  padding: 8px;
+  padding: 12px;
   text-align: left;
+  border: 1px solid #ccc;
 }
+
+th {
+  background-color: #f9f9f9;
+}
+
 tr:hover {
   background-color: #f1f1f1;
 }
+
 .fav-row {
-  background-color: #fff9c4; /* Nền vàng nhạt cho liên hệ yêu thích */
+  background-color: #fff9c4 !important;
+}
+
+form div {
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+}
+
+label {
+  display: inline-block;
+  width: 120px;
+}
+
+input[type="text"], select {
+  flex: 1;
+  max-width: 300px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+button {
+  padding: 6px 12px;
+  cursor: pointer;
+  margin-right: 5px;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+}
+
+td button:last-child {
+  margin-left: 5px;
+}
+
+h2 {
+  margin-top: 0;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 10px;
 }
