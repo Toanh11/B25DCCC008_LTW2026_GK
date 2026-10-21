@@ -1,25 +1,76 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { Router, Route } from "react-router-dom";
+import axios from 'axios';
+import Layout from "./components/Layout";
+import Home from "./pages/Home";
+import ContactList from "./pages/ContactList";
+import AddContact from "./pages/AddContact";
+import ContactDetail from "./pages/ContactDetail";
 
-function App() {
+
+const App = () => {
+  const [contacts, setContacts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const fetchContacts = async () => {
+      const localData = localStorage.getItem('gk_contacts');
+      if (localData) {
+        setContacts(JSON.parse(localData));
+        setLoading(false);
+      } else {
+        try {
+          const res = await axios.get('/data/contacts.json', { signal: controller.signal });
+          setContacts(res.data);
+          setLoading(false);
+        } catch (err) {
+          if (!axios.isCancel(err)) {
+            setError(err);
+            setLoading(false);
+          }
+        }
+      }
+    };
+    fetchContacts();
+    return () => controller.abort();
+  }, []);
+
+  useEffect(() => {
+    if (!loading) {
+      localStorage.setItem('gk_contacts', JSON.stringify(contacts));
+    }
+  }, [contacts, loading]);
+
+  const addContact = (newContact) => {
+    const maxId = contacts.length > 0 ? Math.max(...contacts.map(c => c.id)) : 0;
+    setContacts([...contacts, { ...newContact, id: maxId + 1, favorite: false }]);
+  };
+
+  const deleteContact = (id) => {
+    setContacts(contacts.filter(c => c.id !== id));
+  };
+
+  const toggleFavorite = (id) => {
+    setContacts(contacts.map(c => c.id === id ? { ...c, favorite: !c.favorite } : c));
+  };
+
+  if (loading) return <div>Đang tải...</div>;
+  if (error) return <div>Không tải được dữ liệu</div>;
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<Home contacts={contacts} />} />
+        <Route path="contacts" element={
+          <ContactList contacts={contacts} onDelete={deleteContact} onToggle={toggleFavorite} />
+        } />
+        <Route path="contacts/new" element={<AddContact onAdd={addContact} />} />
+        <Route path="contacts/:id" element={<ContactDetail contacts={contacts} />} />
+      </Route>
+    </Routes>
   );
-}
+};
 
 export default App;
